@@ -1,8 +1,8 @@
-import { Post } from "@/lib/types";
+import { Post, PostWithAuthor } from "@/lib/types";
+import Image from "next/image";
 import Link from "next/link";
-
 interface PostCardProps {
-  post: Post;
+  post: Post | PostWithAuthor;
 }
 
 export default function PostCard({ post }: PostCardProps) {
@@ -11,34 +11,44 @@ export default function PostCard({ post }: PostCardProps) {
     post.body.length > 100 ? post.body.substring(0, 100) + "..." : post.body;
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
-      <div className="p-6 flex-1 flex flex-col">
-        <h3 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
-          {post.title}
-        </h3>
-        <p className="text-gray-600 mb-4 flex-1 line-clamp-3">
-          {truncatedBody}
-        </p>
-        <Link
-          href={`/blog/${post.id}`}
-          className="inline-flex items-center text-blue-600 font-medium hover:text-blue-800 transition-colors mt-auto group"
-        >
-          Read More
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col min-h-[350px] sm:min-h-[400px]">
+      <div className="flex-1 flex flex-col">
+        <div className="relative w-full h-48 sm:h-56">
+          <Image
+            src={"https://picsum.photos/id/237/536/354"}
+            alt={post.title}
+            fill
+            className="object-cover"
+          />
+        </div>
+        <div className="p-4 sm:p-6 flex-1 flex flex-col">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
+            {post.title}
+          </h3>
+          <p className="text-gray-600 mb-4 line-clamp-3 text-sm sm:text-base">
+            {truncatedBody}
+          </p>
+          <Link
+            href={`/blog/${post.id}`}
+            className="mt-auto inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base font-medium px-2 py-1 group"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </Link>
+            بیشتر بخوانید
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform rotate-180"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </Link>
+        </div>
       </div>
     </div>
   );

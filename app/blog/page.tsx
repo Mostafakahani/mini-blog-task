@@ -4,14 +4,31 @@ import { getAllPosts, getAllUsers } from "@/lib/api";
 import { User } from "@/lib/types";
 import PostList from "@/components/blog/PostList";
 
-export const metadata = {
-  title: "Blog Posts | Personal Blog",
-  description: "Browse all blog posts",
-};
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { data: posts } = await getAllPosts();
+  const postTitles = posts.map((post: Post) => post.title).join(", ");
+
+  return {
+    title: "پست های وبلاگ | وبلاگ مینی",
+    description: `مشاهده پست های وبلاگ مینی: ${postTitles}`,
+    keywords: `وبلاگ, مینی, پست, دمو, ${postTitles}`,
+    authors: [{ name: "تیم مینی وبلاگ" }],
+    robots: "index, follow",
+    openGraph: {
+      title: "پست های وبلاگ | وبلاگ مینی",
+      description: `مشاهده پست های وبلاگ مینی: ${postTitles}`,
+      type: "website",
+    },
+  };
+}
 
 export default async function BlogPage() {
-  const { data: posts, error: postsError } = await getAllPosts();
-  const { data: users, error: usersError } = await getAllUsers();
+  const [
+    { data: posts, error: postsError },
+    { data: users, error: usersError },
+  ] = await Promise.all([getAllPosts(), getAllUsers()]);
 
   // Combine posts with author data
   const postsWithAuthors = posts.map((post: Post) => {
@@ -23,12 +40,14 @@ export default async function BlogPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <div className="mb-8 text-center md:text-left">
+    <div className="container mx-auto py-8 max-w-5xl">
+      <div className="mb-8 text-center md:text-right">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-          All Blog Posts
+          همه پست ها
         </h1>
-        <p className="text-gray-600 mt-2">Browse through all articles</p>
+        <p className="text-gray-600 mt-2">
+          در این قسمت پست های وبلاگ مینی را میتوانید مشاهده کنید
+        </p>
       </div>
 
       {postsError || usersError ? (

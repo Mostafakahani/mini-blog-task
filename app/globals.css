@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-yekanBakh-light: var(--font-yekanBakh-light);
+  --font-yekanBakh-regular: var(--font-yekanBakh-regular);
+  --font-yekanBakh-bold: var(--font-yekanBakh-bold);
+  --font-yekanBakh-black: var(--font-yekanBakh-black);
+  --font-dana-black: var(--font-dana-black);
+  --font-dana-bold: var(--font-dana-bold);
+  --font-dana-demibold: var(--font-dana-demibold);
+  --font-dana-medium: var(--font-dana-medium);
+  --font-dana-regular: var(--font-dana-regular);
+  --font-lobester: var(--font-lobester);
 }
 
 :root {
@@ -16,9 +24,35 @@
     --foreground: #ededed;
   }
 }
-
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: ModamFaNum, Arial, Helvetica, sans-serif;
+}
+html {
+  scroll-behavior: smooth;
+}
+
+/* استایل‌دهی به اسکرول بار */
+::-webkit-scrollbar {
+  width: 8px;
+  transition: all 0.3s ease !important;
+  /* عرض اسکرول بار */
+}
+
+::-webkit-scrollbar-track {
+  background: #fffcfc;
+  /* رنگ پس‌زمینه */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #e6e8ff;
+  /* رنگ دسته اسکرول بار */
+  border-radius: 10px;
+  /* گرد کردن گوشه‌های دسته */
+  border: 2px solid transparent;
+  /* حاشیه شفاف برای فضای داخلی */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+  /* رنگ هنگام هاور روی اسکرول بار */
 }
