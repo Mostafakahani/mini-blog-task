@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createPost, getAllUsers } from "@/lib/api";
-import { User } from "@/lib/types";
+import { createPost, getAllUsers, getAllPosts, updatePost } from "@/lib/api";
+import { User, Post } from "@/lib/types";
 import Button from "@/components/ui/Button";
 
 export default function CreatePostPage() {
@@ -12,12 +12,17 @@ export default function CreatePostPage() {
   const [error, setError] = useState("");
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  // const [posts, setPosts] = useState<Post[]>([]);
+  const [localPosts, setLocalPosts] = useState<Post[]>([]);
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
 
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [userId, setUserId] = useState(1);
 
-  // دریافت کاربران برای منوی کشویی
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [error]);
   useEffect(() => {
     async function fetchUsers() {
       const { data, error } = await getAllUsers();
@@ -27,7 +32,16 @@ export default function CreatePostPage() {
           "دریافت کاربران با مشکل مواجه شد. لطفاً بعداً دوباره تلاش کنید."
         );
       } else {
-        setUsers(data);
+        setUsers([
+          ...data,
+          {
+            id: 500,
+            email: "WebsiteAdmin@gmail.com",
+            name: "WebsiteAdmin",
+            username: "WebsiteAdmin",
+            website: "/",
+          },
+        ]);
         if (data.length > 0) {
           setUserId(data[0].id);
         }
@@ -39,12 +53,26 @@ export default function CreatePostPage() {
     fetchUsers();
   }, []);
 
+  // دریافت پست‌ها
+  async function fetchPosts() {
+    const { error, localData } = await getAllPosts();
+
+    if (error) {
+      setError("دریافت پست‌ها با مشکل مواجه شد. لطفاً بعداً دوباره تلاش کنید.");
+    } else {
+      // setPosts(data);
+      setLocalPosts(localData);
+    }
+  }
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
 
-    // اعتبارسنجی فرم
     if (!title.trim()) {
       setError("عنوان پست الزامی است");
       setIsSubmitting(false);
@@ -58,25 +86,90 @@ export default function CreatePostPage() {
     }
 
     try {
-      const postData = { title, body, userId };
-      const { error } = await createPost(postData);
+      const userData = users.find((x) => x.id === userId);
 
-      if (error) {
-        throw new Error(error);
+      if (userId === 500 && !userData) {
+        return setError("کاربر با شناسه 500 نمی‌تواند پست ایجاد کند.");
       }
 
-      // هدایت به لیست بلاگ
-      // در یک برنامه واقعی، به پست جدید هدایت می‌شود
-      // اما چون از یک API آزمایشی استفاده می‌کنیم، به لیست بلاگ می‌رویم
-      router.push("/blog");
-      router.refresh();
+      if (!userData) {
+        return setError("اطلاعات کاربر وارد شده اشتباه است.");
+      }
+
+      let result: { data?: Post; error?: string };
+
+      if (editingPost) {
+        // ویرایش پست موجود
+        result = await updatePost(editingPost.id, {
+          title,
+          body,
+          user: userData,
+        });
+
+        if (result?.error) {
+          throw new Error(result.error);
+        }
+
+        fetchPosts();
+      } else {
+        result = await createPost({
+          title,
+          body,
+          user: userData,
+        });
+
+        if (result?.error) {
+          throw new Error(result.error);
+        }
+
+        // setPosts([result.data, ...posts]);
+      }
+
+      // پاک کردن فرم
+      setTitle("");
+      setBody("");
+      setEditingPost(null);
+
+      if (!editingPost) {
+        router.push("/blog");
+      }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "ایجاد پست با مشکل مواجه شد"
-      );
+      setError(err instanceof Error ? err.message : "عملیات با مشکل مواجه شد");
     } finally {
       setIsSubmitting(false);
     }
+  };
+  // تابع حذف پست
+  const handleDeletePost = async (postId: number) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts?id=${postId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("حذف پست با مشکل مواجه شد");
+      }
+      fetchPosts();
+
+      // حذف پست از لیست
+      // setPosts(posts.filter((post) => post.id !== postId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "حذف پست با مشکل مواجه شد");
+    }
+  };
+
+  // تابع ویرایش پست
+  const handleEditPost = (post: Post) => {
+    setEditingPost(post);
+    setTitle(post.title);
+    setBody(post.body);
+    setUserId(post.user?.id || 1);
+
+    // اسکرول به بالای صفحه
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   if (isLoading) {
@@ -86,7 +179,7 @@ export default function CreatePostPage() {
   return (
     <div className="max-w-2xl mx-auto py-8 md:py-12 text-right">
       <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 border-right-4 border-blue-500 md:pr-4">
-        ایجاد پست جدید
+        {editingPost ? "ویرایش پست" : "ایجاد پست جدید"}
       </h1>
 
       {error && (
@@ -171,12 +264,72 @@ export default function CreatePostPage() {
           />
         </div>
 
-        <div className="pt-4">
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "در حال انتشار..." : "انتشار پست"}
+        <div className="pt-4 flex gap-4 justify-between">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => {
+              setTitle("");
+              setBody("");
+              setEditingPost(null);
+            }}
+            disabled={isSubmitting}
+          >
+            حذف فیلد ها
+          </Button>
+          <Button variant="secondary" type="submit" disabled={isSubmitting}>
+            {isSubmitting
+              ? "در حال انتشار..."
+              : editingPost
+              ? "بروزرسانی پست"
+              : "انتشار پست"}
           </Button>
         </div>
       </form>
+
+      {/* بخش لیست پست‌ها */}
+      <div className="mt-12">
+        <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 border-right-4 border-blue-500 md:pr-4">
+          لیست پست‌های شما
+        </h2>
+
+        {localPosts.length === 0 ? (
+          <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <p className="text-gray-500">هنوز پستی ایجاد نکرده‌اید.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {localPosts.map((post) => (
+              <div
+                key={post.id}
+                className="bg-white p-4 md:p-6 rounded-lg shadow-md transition-all hover:shadow-lg"
+              >
+                <h3 className="text-lg font-semibold mb-2">{post.title}</h3>
+                <p className="text-gray-600 mb-4 line-clamp-2">{post.body}</p>
+                <div className="flex justify-between items-center">
+                  <div className="text-sm text-gray-500">
+                    نویسنده: {post.user?.name || "ناشناس"}
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleEditPost(post)}
+                      className="px-3 py-1 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors cursor-pointer"
+                    >
+                      ویرایش
+                    </button>
+                    <button
+                      onClick={() => handleDeletePost(post.id)}
+                      className="px-3 py-1 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors cursor-pointer"
+                    >
+                      حذف
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

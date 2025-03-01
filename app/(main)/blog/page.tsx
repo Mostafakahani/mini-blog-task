@@ -49,7 +49,16 @@ export default function BlogPage() {
         }
 
         setPosts(postsResponse.data);
-        setUsers(usersResponse.data);
+        setUsers([
+          ...usersResponse.data,
+          {
+            id: 500,
+            email: "WebsiteAdmin@gmail.com",
+            name: "WebsiteAdmin",
+            username: "WebsiteAdmin",
+            website: "/",
+          },
+        ]);
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : "خطایی رخ داده است");

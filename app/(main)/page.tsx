@@ -21,6 +21,7 @@ export default async function HomePage() {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               مینی وبلاگ
             </h1>
+
             <p className="text-md md:text-xl text-gray-600 mb-10 leading-relaxed">
               لورم اپیسوم ستونی است که برای اینکه صفحه وب را زیباتر کند استفاده
               میشود. لورم اپیسوم ستونی است که برای اینکه صفحه وب را زیباتر کند

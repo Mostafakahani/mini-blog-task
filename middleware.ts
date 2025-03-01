@@ -4,7 +4,6 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   // دریافت کوکی کاربر
   const userCookie = request.cookies.get("user");
-  console.log(userCookie);
   // مسیر درخواست فعلی
   const path = request.nextUrl.pathname;
 

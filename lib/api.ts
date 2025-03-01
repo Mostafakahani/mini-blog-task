@@ -1,34 +1,94 @@
+import React from "react";
+import { usePostStore } from "./store";
+import { Post } from "./types";
+
+const BASE_URL_POSTS = process.env.NEXT_PUBLIC_BASE_URL_POSTS || "";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
-// Get all posts
 export async function getAllPosts() {
   try {
-    const response = await fetch(`${BASE_URL}/posts`);
+    // During build time, we should only fetch from external API
+    // For server-side rendering that runs at request time, we can use both
+    const isServerSideRendering =
+      typeof window === "undefined" && process.env.NODE_ENV !== "production";
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch posts");
+    if (isServerSideRendering) {
+      // When in production build process, only fetch from external API
+      const response = await fetch(`${BASE_URL_POSTS}/posts`);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch posts from ${BASE_URL_POSTS}/posts`);
+      }
+
+      const data = await response.json();
+
+      return {
+        data: data.slice(0, 10),
+        error: null,
+      };
+    } else {
+      // In development or client-side, fetch from both sources
+      try {
+        const [response, responseLocal] = await Promise.all([
+          fetch(`${BASE_URL_POSTS}/posts`),
+          fetch(`${BASE_URL}/api/posts`),
+        ]);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch posts from ${BASE_URL_POSTS}/posts`);
+        }
+
+        const data = await response.json();
+        const localData = await responseLocal.json();
+        console.log({ data, localData });
+
+        return {
+          data: [...data.slice(0, 10), ...localData],
+          localData,
+          error: null,
+        };
+      } catch {
+        // Fallback to just the external API if local API fails
+        const response = await fetch(`${BASE_URL_POSTS}/posts`);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch posts from ${BASE_URL_POSTS}/posts`);
+        }
+
+        const data = await response.json();
+
+        console.warn(
+          "Could not fetch from local API, using only external data"
+        );
+        return {
+          data: data.slice(0, 10),
+          error: null,
+        };
+      }
     }
-
-    const data = await response.json();
-    return { data, error: null };
   } catch (error) {
+    console.error("Error fetching posts:", error);
     return {
       data: [],
       error: error instanceof Error ? error.message : "Unknown error occurred",
     };
   }
 }
-
 // Get post by ID
 export async function getPostById(id: number) {
   try {
-    const response = await fetch(`${BASE_URL}/posts/${id}`);
+    const [response, responseLocal] = await Promise.all([
+      fetch(`${BASE_URL_POSTS}/posts/${id}`),
+      fetch(`${BASE_URL}/api/posts?id=${id}`),
+    ]);
 
-    if (!response.ok) {
+    if (!responseLocal.ok && !response.ok) {
       throw new Error("Failed to fetch post");
     }
 
-    const data = await response.json();
+    const data = responseLocal.ok
+      ? await responseLocal.json()
+      : await response.json();
     return { data, error: null };
   } catch (error) {
     return {
@@ -41,7 +101,7 @@ export async function getPostById(id: number) {
 // Get all users
 export async function getAllUsers() {
   try {
-    const response = await fetch(`${BASE_URL}/users`);
+    const response = await fetch(`${BASE_URL_POSTS}/users`);
 
     if (!response.ok) {
       throw new Error("Failed to fetch users");
@@ -60,7 +120,7 @@ export async function getAllUsers() {
 // Get user by ID
 export async function getUserById(id: number) {
   try {
-    const response = await fetch(`${BASE_URL}/users/${id}`);
+    const response = await fetch(`${BASE_URL_POSTS}/users/${id}`);
 
     if (!response.ok) {
       throw new Error("Failed to fetch user");
@@ -80,10 +140,10 @@ export async function getUserById(id: number) {
 export async function createPost(post: {
   title: string;
   body: string;
-  userId: number;
-}) {
+  user: object;
+}): Promise<{ data?: Post; error?: string }> {
   try {
-    const response = await fetch(`${BASE_URL}/posts`, {
+    const response = await fetch(`${BASE_URL}/api/posts`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -92,15 +152,76 @@ export async function createPost(post: {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to create post");
+      throw new Error("خطا در ایجاد پست");
     }
 
     const data = await response.json();
-    return { data, error: null };
+    return { data, error: undefined };
   } catch (error) {
     return {
-      data: {},
-      error: error instanceof Error ? error.message : "Unknown error occurred",
+      // data: {},
+      error:
+        error instanceof Error ? error.message : "خطای ناشناخته رخ داده است",
     };
   }
+}
+
+// Update post
+export async function updatePost(
+  id: number,
+  post: {
+    title: string;
+    body: string;
+    user?: object;
+  }
+): Promise<{ data?: Post; error?: string }> {
+  try {
+    const response = await fetch(`${BASE_URL}/api/posts?id=${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(post),
+    });
+
+    if (!response.ok) {
+      throw new Error("خطا در بروزرسانی پست");
+    }
+
+    const data = await response.json();
+    return { data, error: undefined };
+  } catch (error) {
+    return {
+      // data: {},
+      error:
+        error instanceof Error ? error.message : "خطای ناشناخته رخ داده است",
+    };
+  }
+}
+
+// Get all posts with Zustand
+export function usePosts() {
+  const { posts, isLoading, error, fetchPosts } = usePostStore();
+
+  React.useEffect(() => {
+    if (posts.length === 0 && !isLoading && !error) {
+      fetchPosts();
+    }
+  }, [posts.length, isLoading, error, fetchPosts]);
+
+  return { posts, isLoading, error, refetch: fetchPosts };
+}
+
+// Get post by ID with Zustand
+export function usePost(id: number) {
+  const { posts, getPostById, isLoading, error, fetchPosts } = usePostStore();
+
+  React.useEffect(() => {
+    if (posts.length === 0 && !isLoading && !error) {
+      fetchPosts();
+    }
+  }, [posts.length, isLoading, error, fetchPosts]);
+
+  const post = getPostById(id);
+  return { post, isLoading, error };
 }

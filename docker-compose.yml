@@ -7,4 +7,5 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
+      - NEXT_PUBLIC_BASE_URL=http://localhost:3000
+      - NEXT_PUBLIC_BASE_URL_POSTS=https://jsonplaceholder.typicode.com
