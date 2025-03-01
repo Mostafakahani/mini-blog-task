@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createPost, getAllUsers } from "@/lib/api";
 import { User } from "@/lib/types";
+import Button from "@/components/ui/Button";
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -171,13 +172,9 @@ export default function CreatePostPage() {
         </div>
 
         <div className="pt-4">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all shadow-md hover:shadow-lg disabled:from-blue-400 disabled:to-blue-500 disabled:shadow-none"
-          >
+          <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "در حال انتشار..." : "انتشار پست"}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

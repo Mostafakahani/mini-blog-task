@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getAllPosts } from "@/lib/api";
 import { Post } from "@/lib/types";
 import PostCard from "@/components/blog/PostCart";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/ButtonLink";
 
 export default async function HomePage() {
   const { data: posts, error } = await getAllPosts();
@@ -60,8 +60,11 @@ export default async function HomePage() {
         </div>
 
         {error ? (
-          <div className="bg-red-50 p-6 rounded-lg shadow-sm">
+          <div className="bg-red-50 p-6 rounded-lg shadow-sm w-full flex justify-center items-center">
             <div className="flex items-center">
+              <p className="text-red-600 font-medium text-center w-full">
+                Failed to load posts: {error}
+              </p>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6 text-red-500 mr-3"
@@ -76,9 +79,6 @@ export default async function HomePage() {
                   d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <p className="text-red-600 font-medium">
-                Failed to load posts: {error}
-              </p>
             </div>
           </div>
         ) : (

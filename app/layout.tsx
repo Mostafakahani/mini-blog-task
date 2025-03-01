@@ -4,64 +4,33 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import localFont from "next/font/local";
 
-const yekanBakhLight = localFont({
-  src: "./fonts/YekanBakhFaNum-Light.woff2",
-  variable: "--font-yekanBakh-light",
-  weight: "100 300", // Light weights
+const modamLight = localFont({
+  src: "./fonts/ModamFaNumWeb-Light.woff2",
+  variable: "--font-modam-light",
+  weight: "200", // Light weight
 });
 
-const yekanBakhRegular = localFont({
-  src: "./fonts/YekanBakhFaNum-Regular.woff2",
-  variable: "--font-yekanBakh-regular",
-  weight: "400 500", // Regular weights
+const modamRegular = localFont({
+  src: "./fonts/ModamFaNumWeb-Regular.woff2",
+  variable: "--font-modam-regular",
+  weight: "400", // Regular. weight
+});
+const modamMedium = localFont({
+  src: "./fonts/ModamFaNumWeb-Medium.woff2",
+  variable: "--font-modam-medium",
+  weight: "400", // Medium weight
 });
 
-const yekanBakhBold = localFont({
-  src: "./fonts/YekanBakhFaNum-Bold.woff2",
-  variable: "--font-yekanBakh-bold",
-  weight: "600 700", // Bold weights
+const modamSemiBold = localFont({
+  src: "./fonts/ModamFaNumWeb-SemiBold.woff2",
+  variable: "--font-modam-semibold",
+  weight: "600", // SemiBold weight
 });
 
-const yekanBakhBlack = localFont({
-  src: "./fonts/YekanBakhFaNum-Black.woff2",
-  variable: "--font-yekanBakh-black",
-  weight: "800 900", // Black weights
-});
-
-const danaBlack = localFont({
-  src: "./fonts/dana/DanaFaNum-Black.woff2",
-  variable: "--font-dana-black",
-  weight: "800 900", // Black weights
-});
-
-const danaBold = localFont({
-  src: "./fonts/dana/DanaFaNum-bold.woff2",
-  variable: "--font-dana-bold",
-  weight: "600 700", // Bold weights
-});
-
-const danaDemiBold = localFont({
-  src: "./fonts/dana/DanaFaNum-DemiBold.woff2",
-  variable: "--font-dana-demibold",
-  weight: "500 600", // DemiBold weights
-});
-
-const danaDemiMedium = localFont({
-  src: "./fonts/dana/DanaFaNum-Medium.woff2",
-  variable: "--font-dana-medium",
-  weight: "400 500", // Medium weights
-});
-
-const danaDemiRegular = localFont({
-  src: "./fonts/dana/DanaFaNum-Regular.woff2",
-  variable: "--font-dana-regular",
-  weight: "300 400", // Regular weights
-});
-
-const lobesterFont = localFont({
-  src: "./fonts/Lobster-Regular.woff2",
-  variable: "--font-lobester",
-  weight: "400", // Lobster is typically a single-weight font
+const modamBlack = localFont({
+  src: "./fonts/ModamFaNumWeb-Black.woff2",
+  variable: "--font-modam-black",
+  weight: "800", // Black weight
 });
 export const metadata: Metadata = {
   title: "مینی وبلاگ",
@@ -85,7 +54,7 @@ export default function RootLayout({
     <html lang="fa" dir="rtl">
       <body
         suppressHydrationWarning
-        className={`${danaBlack.variable} ${danaBold.variable} ${danaDemiBold.variable} ${danaDemiMedium.variable} ${danaDemiRegular.variable} ${yekanBakhLight.variable} ${yekanBakhRegular.variable} ${yekanBakhBold.variable} ${lobesterFont.variable} ${yekanBakhBlack.variable} antialiased`}
+        className={`${modamLight.variable} ${modamMedium.variable} ${modamSemiBold.variable} ${modamBlack.variable} ${modamRegular.variable} antialiased`}
       >
         <div className="min-h-screen flex flex-col">
           <Navbar />

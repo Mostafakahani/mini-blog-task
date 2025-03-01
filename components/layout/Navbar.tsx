@@ -83,7 +83,7 @@ export default function Navbar() {
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className={
-                "text-gray-700 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-full p-2 transition-all duration-300"
+                "text-gray-700 hover:text-blue-600 focus:outline-none focus:ring-0 rounded-full p-2 transition-all duration-300 md:hidden"
               }
               aria-label="Toggle navigation menu"
             >

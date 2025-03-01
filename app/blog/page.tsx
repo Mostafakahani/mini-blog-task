@@ -1,41 +1,72 @@
-// === BlogPage.tsx ===
+"use client";
+
 import { Post } from "@/lib/types";
 import { getAllPosts, getAllUsers } from "@/lib/api";
 import { User } from "@/lib/types";
 import PostList from "@/components/blog/PostList";
 
-import { Metadata } from "next";
+// import { Metadata } from "next";
+import { useEffect, useState } from "react";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { data: posts } = await getAllPosts();
-  const postTitles = posts.map((post: Post) => post.title).join(", ");
+// export async function generateMetadata(): Promise<Metadata> {
+//   const { data: posts } = await getAllPosts();
+//   const postTitles = posts.map((post: Post) => post.title).join(", ");
 
-  return {
-    title: "پست های وبلاگ | وبلاگ مینی",
-    description: `مشاهده پست های وبلاگ مینی: ${postTitles}`,
-    keywords: `وبلاگ, مینی, پست, دمو, ${postTitles}`,
-    authors: [{ name: "تیم مینی وبلاگ" }],
-    robots: "index, follow",
-    openGraph: {
-      title: "پست های وبلاگ | وبلاگ مینی",
-      description: `مشاهده پست های وبلاگ مینی: ${postTitles}`,
-      type: "website",
-    },
-  };
-}
+//   return {
+//     title: "پست های وبلاگ | وبلاگ مینی",
+//     description: `مشاهده پست های وبلاگ مینی: ${postTitles}`,
+//     keywords: `وبلاگ, مینی, پست, دمو, ${postTitles}`,
+//     authors: [{ name: "تیم مینی وبلاگ" }],
+//     robots: "index, follow",
+//     openGraph: {
+//       title: "پست های وبلاگ | وبلاگ مینی",
+//       description: `مشاهده پست های وبلاگ مینی: ${postTitles}`,
+//       type: "website",
+//     },
+//   };
+// }
 
-export default async function BlogPage() {
-  const [
-    { data: posts, error: postsError },
-    { data: users, error: usersError },
-  ] = await Promise.all([getAllPosts(), getAllUsers()]);
+export default function BlogPage() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Combine posts with author data
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setIsLoading(true);
+        const [postsResponse, usersResponse] = await Promise.all([
+          getAllPosts(),
+          getAllUsers(),
+        ]);
+
+        if (postsResponse.error) {
+          throw new Error(postsResponse.error);
+        }
+        if (usersResponse.error) {
+          throw new Error(usersResponse.error);
+        }
+
+        setPosts(postsResponse.data);
+        setUsers(usersResponse.data);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "خطایی رخ داده است");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  // ترکیب پست‌ها با اطلاعات نویسنده
   const postsWithAuthors = posts.map((post: Post) => {
     const author = users.find((user: User) => user.id === post.userId);
     return {
       ...post,
-      author: author ? author.name : "Unknown Author",
+      author: author ? author.name : "نویسنده ناشناس",
     };
   });
 
@@ -50,7 +81,11 @@ export default async function BlogPage() {
         </p>
       </div>
 
-      {postsError || usersError ? (
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      ) : error ? (
         <div className="bg-red-50 p-6 rounded-lg shadow-sm">
           <div className="flex items-center">
             <svg
@@ -67,9 +102,7 @@ export default async function BlogPage() {
                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <p className="text-red-600 font-medium">
-              {postsError || usersError}
-            </p>
+            <p className="text-red-600 font-medium">{error}</p>
           </div>
         </div>
       ) : (

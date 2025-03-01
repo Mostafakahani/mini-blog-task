@@ -22,7 +22,7 @@ export default function PostCard({ post }: PostCardProps) {
           />
         </div>
         <div className="p-4 sm:p-6 flex-1 flex flex-col">
-          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 line-clamp-2 font-lobester">
             {post.title}
           </h3>
           <p className="text-gray-600 mb-4 line-clamp-3 text-sm sm:text-base">

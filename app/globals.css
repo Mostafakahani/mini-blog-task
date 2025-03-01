@@ -1,16 +1,12 @@
 @import "tailwindcss";
-
-@theme {
-  --font-yekanBakh-light: var(--font-yekanBakh-light);
-  --font-yekanBakh-regular: var(--font-yekanBakh-regular);
-  --font-yekanBakh-bold: var(--font-yekanBakh-bold);
-  --font-yekanBakh-black: var(--font-yekanBakh-black);
-  --font-dana-black: var(--font-dana-black);
-  --font-dana-bold: var(--font-dana-bold);
-  --font-dana-demibold: var(--font-dana-demibold);
-  --font-dana-medium: var(--font-dana-medium);
-  --font-dana-regular: var(--font-dana-regular);
-  --font-lobester: var(--font-lobester);
+@tailwind utilities;
+@layer base {
+  :root {
+    --font-modam-light: var(--font-modam-light);
+    --font-modam-regular: var(--font-modam-regular);
+    --font-modam-bold: var(--font-modam-bold);
+    --font-modam-black: var(--font-modam-black);
+  }
 }
 
 :root {
@@ -25,7 +21,7 @@
   }
 }
 body {
-  font-family: ModamFaNum, Arial, Helvetica, sans-serif;
+  font-family: var(--font-modam-regular), serif;
 }
 html {
   scroll-behavior: smooth;
