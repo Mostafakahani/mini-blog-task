@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+
 import localFont from "next/font/local";
 
 const modamLight = localFont({
@@ -56,13 +55,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${modamLight.variable} ${modamMedium.variable} ${modamSemiBold.variable} ${modamBlack.variable} ${modamRegular.variable} antialiased`}
       >
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-grow container mx-auto px-4 py-8">
-            {children}
-          </main>
-          <Footer />
-        </div>
+        {children}
       </body>
     </html>
   );

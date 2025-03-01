@@ -72,11 +72,11 @@ export default function BlogPage() {
 
   return (
     <div className="container mx-auto py-8 max-w-5xl">
-      <div className="mb-8 text-center md:text-right">
+      <div className="mb-8 text-right">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
           همه پست ها
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p className="text-gray-600 text-sm md:text-md mt-2">
           در این قسمت پست های وبلاگ مینی را میتوانید مشاهده کنید
         </p>
       </div>

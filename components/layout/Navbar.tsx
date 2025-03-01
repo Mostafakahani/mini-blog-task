@@ -1,18 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { getCookie } from "@/app/server-actions";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  // const [mounted, setMounted] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // // Use useEffect to handle client-side only code
-  // useEffect(() => {
-  //   setMounted(true);
-  // }, []);
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const userCookie = await getCookie("user");
+        setIsLoggedIn(!!userCookie);
+      } catch (error) {
+        console.error("خطا در بررسی وضعیت ورود:", error);
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
 
   const isActive = (path: string) => {
     return pathname === path
@@ -20,19 +30,13 @@ export default function Navbar() {
       : "text-gray-700 hover:text-blue-500 relative before:absolute before:bottom-0 before:left-0 before:w-0 before:h-0.5 before:bg-blue-500 before:transition-all before:duration-300 hover:before:w-full before:rounded-full";
   };
 
-  // Basic className for server-side rendering
-  // const headerClass = "bg-white shadow-sm sticky top-0 z-30";
-
-  // Enhanced className that will only be applied client-side after hydration
   const headerClassFull =
-    // mounted
-    // ?
     "bg-white/70 backdrop-blur-md sticky top-0 z-30 transition-all duration-300";
-  // : headerClass;
+
   const menuItems = [
     { title: "خانه", href: "/" },
     { title: "وبلاگ", href: "/blog" },
-    { title: "ایجاد پست", href: "/create" },
+    // { title: "ایجاد پست", href: "/create" },
     { title: "درباره ما", href: "/about" },
   ];
 
@@ -69,12 +73,12 @@ export default function Navbar() {
           {/* Sign In Button (Desktop) */}
           <div className="hidden md:block">
             <Link
-              href="/signin"
+              href={isLoggedIn ? "/create" : "/auth"}
               className={
                 "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full font-medium shadow-sm hover:shadow-md transition-all duration-300"
               }
             >
-              ورود
+              {isLoggedIn ? "ایجاد پست" : "ورود"}
             </Link>
           </div>
 
@@ -134,13 +138,13 @@ export default function Navbar() {
             ))}
             <div className="pt-2">
               <Link
-                href="/signin"
+                href={isLoggedIn ? "/create" : "/auth"}
                 className={
                   "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full font-medium inline-block shadow-sm hover:shadow-md transition-all duration-300 w-full text-center"
                 }
                 onClick={() => setIsMenuOpen(false)}
               >
-                ورود
+                {isLoggedIn ? "ایجاد پست" : "ورود"}
               </Link>
             </div>
           </div>

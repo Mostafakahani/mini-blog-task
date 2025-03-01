@@ -1,7 +1,7 @@
 import React from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "default" | "primary" | "secondary" | "danger";
+  variant?: "default" | "primary" | "secondary" | "danger" | "ghost";
   size?: "sm" | "md" | "lg";
   isLoading?: boolean;
 }
@@ -20,13 +20,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      "w-full py-3 px-4 bg-gradient-to-r cursor-pointer from-blue-500 to-blue-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all shadow-md hover:shadow-lg disabled:from-blue-400 disabled:to-blue-500 disabled:shadow-none disabled:cursor-none";
+      "w-full cursor-pointer font-medium rounded-lg !transition-all shadow-md hover:shadow-lg disabled:shadow-none disabled:cursor-not-allowed";
 
     const variants = {
       default: "bg-gray-100 hover:bg-gray-200 text-gray-900",
-      primary: "bg-blue-600 hover:bg-blue-700 text-white",
+      primary:
+        "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 disabled:from-blue-400 disabled:to-blue-500",
       secondary: "bg-gray-600 hover:bg-gray-700 text-white",
       danger: "bg-red-600 hover:bg-red-700 text-white",
+      ghost:
+        "bg-transparent hover:bg-gray-100 text-gray-700 shadow-none hover:shadow-none",
     };
 
     const sizes = {
