@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import { setCookie } from "cookies-next";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -30,6 +31,8 @@ export default function AuthPage() {
         const data = await response.json();
 
         if (data.success) {
+          setCookie("user", "mm");
+
           router.push("/");
         } else {
           setError(data.message || "نام کاربری یا رمز عبور اشتباه است");
