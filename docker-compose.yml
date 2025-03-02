@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3005:3005"
     environment:
-      - NEXT_PUBLIC_BASE_URL=http://localhost:3000
+      - NEXT_PUBLIC_BASE_URL=http://localhost:3005
       - NEXT_PUBLIC_BASE_URL_POSTS=https://jsonplaceholder.typicode.com
