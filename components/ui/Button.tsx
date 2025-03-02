@@ -43,8 +43,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${
-          isLoading ? "opacity-70 cursor-not-allowed" : ""
-        } ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
+          isLoading || disabled ? "cursor-not-allowed" : ""
+        } ${isLoading ? "opacity-70" : ""} ${
+          disabled ? "opacity-50" : ""
+        } ${className}`}
         {...props}
       >
         {isLoading ? (

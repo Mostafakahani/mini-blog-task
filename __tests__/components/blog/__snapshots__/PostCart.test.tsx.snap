@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PostCard matches snapshot 1`] = `
+<div
+  class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col min-h-[350px] sm:min-h-[400px]"
+>
+  <div
+    class="flex-1 flex flex-col"
+  >
+    <div
+      class="relative w-full h-48 sm:h-56"
+    >
+      <img
+        alt="Test Post Title"
+        class="object-cover"
+        data-nimg="fill"
+        decoding="async"
+        loading="lazy"
+        sizes="100vw"
+        src="/_next/image?url=https%3A%2F%2Fpicsum.photos%2Fid%2F237%2F536%2F354&w=3840&q=75"
+        srcset="/_next/image?url=https%3A%2F%2Fpicsum.photos%2Fid%2F237%2F536%2F354&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fpicsum.photos%2Fid%2F237%2F536%2F354&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fpicsum.photos%2Fid%2F237%2F536%2F354&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fpicsum.photos%2Fid%2F237%2F536%2F354&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fpicsum.photos%2Fid%2F237%2F536%2F354&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fpicsum.photos%2Fid%2F237%2F536%2F354&w=1920&q=75 1920w, /_next/image?url=https%3A%2F%2Fpicsum.photos%2Fid%2F237%2F536%2F354&w=2048&q=75 2048w, /_next/image?url=https%3A%2F%2Fpicsum.photos%2Fid%2F237%2F536%2F354&w=3840&q=75 3840w"
+        style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px; right: 0px; bottom: 0px; color: transparent;"
+      />
+    </div>
+    <div
+      class="p-4 sm:p-6 flex-1 flex flex-col justify-between"
+    >
+      <h3
+        class="text-lg sm:text-xl font-semibold text-gray-900 mb-3 line-clamp-2 font-lobester"
+      >
+        Test Post Title
+      </h3>
+      <p
+        class="text-gray-600 mb-4 line-clamp-3 text-sm sm:text-base"
+      >
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ac diam sit amet quam vehicula e...
+      </p>
+      <div
+        class="flex flex-row items-center justify-between w-full"
+      >
+        <p
+          class="text-sm sm:text-sm text-gray-900/50 line-clamp-2 font-lobester"
+        >
+          John Doe
+        </p>
+        <a
+          class="mt-auto inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base font-medium px-2 py-1 group"
+          href="/blog/1"
+        >
+          بیشتر بخوانید
+          <svg
+            class="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform rotate-180"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9 5l7 7-7 7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+`;

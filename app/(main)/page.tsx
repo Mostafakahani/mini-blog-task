@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getAllPosts } from "@/lib/api";
-import { Post } from "@/lib/types";
+import { PostWithAuthor } from "@/lib/types";
 import PostCard from "@/components/blog/PostCart";
 import Button from "@/components/ui/ButtonLink";
 
@@ -84,7 +84,7 @@ export default async function HomePage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredPosts.map((post: Post) => (
+            {featuredPosts.map((post: PostWithAuthor) => (
               <PostCard key={post.id} post={post} />
             ))}
           </div>
