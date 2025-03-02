@@ -87,6 +87,7 @@ export async function getPostById(id: number) {
     const data = responseLocal.ok
       ? await responseLocal.json()
       : await response.json();
+    console.log(data);
     return { data, error: null };
   } catch (error) {
     return {

@@ -13,7 +13,6 @@ interface PageProps {
 export default async function PostPage({ params }: PageProps) {
   const { id } = await params;
   const postId = Number(id);
-
   if (isNaN(postId)) {
     notFound();
   }
