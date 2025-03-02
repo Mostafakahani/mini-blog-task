@@ -61,7 +61,7 @@ export default function CreatePostPage() {
       setError("دریافت پست‌ها با مشکل مواجه شد. لطفاً بعداً دوباره تلاش کنید.");
     } else {
       // setPosts(data);
-      setLocalPosts(localData);
+      setLocalPosts(localData || []);
     }
   }
   useEffect(() => {
@@ -292,8 +292,7 @@ export default function CreatePostPage() {
         <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 border-right-4 border-blue-500 md:pr-4">
           لیست پست‌های شما
         </h2>
-
-        {localPosts.length === 0 ? (
+        {localPosts?.length === 0 ? (
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <p className="text-gray-500">هنوز پستی ایجاد نکرده‌اید.</p>
           </div>
