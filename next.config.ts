@@ -6,8 +6,10 @@ const nextConfig: NextConfig = {
   },
   env: {
     NEXT_PUBLIC_BASE_URL_POSTS: "https://jsonplaceholder.typicode.com",
-    // Use a conditional to set the base URL depending on environment
-    NEXT_PUBLIC_BASE_URL: "http://localhost:3005",
+    NEXT_PUBLIC_BASE_URL:
+      process.env.NODE_ENV === "production"
+        ? "http://185.204.170.68:3005"
+        : "http://localhost:3005",
   },
 };
 
