@@ -9,11 +9,46 @@ export async function getAllPosts() {
   try {
     // During build time, we should only fetch from external API
     // For server-side rendering that runs at request time, we can use both
-    const isServerSideRendering =
-      typeof window === "undefined" && process.env.NODE_ENV !== "production";
+    // const isServerSideRendering =
+    //   typeof window === "undefined" && process.env.NODE_ENV !== "production";
 
-    if (isServerSideRendering) {
-      // When in production build process, only fetch from external API
+    // if (isServerSideRendering) {
+    //   // When in production build process, only fetch from external API
+    //   const response = await fetch(`${BASE_URL_POSTS}/posts`);
+
+    //   if (!response.ok) {
+    //     throw new Error(`Failed to fetch posts from ${BASE_URL_POSTS}/posts`);
+    //   }
+
+    //   const data = await response.json();
+    //   console.log("server render");
+
+    //   return {
+    //     data: data.slice(0, 10),
+    //     error: null,
+    //   };
+    // } else {
+    // In development or client-side, fetch from both sources
+    try {
+      const [response, responseLocal] = await Promise.all([
+        fetch(`${BASE_URL_POSTS}/posts`),
+        fetch(`${BASE_URL}/api/posts`),
+      ]);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch posts from ${BASE_URL_POSTS}/posts`);
+      }
+
+      const data = await response.json();
+      const localData = await responseLocal.json();
+
+      return {
+        data: [...data.slice(0, 10), ...localData],
+        localData,
+        error: null,
+      };
+    } catch {
+      // Fallback to just the external API if local API fails
       const response = await fetch(`${BASE_URL_POSTS}/posts`);
 
       if (!response.ok) {
@@ -22,50 +57,13 @@ export async function getAllPosts() {
 
       const data = await response.json();
 
+      console.warn("Could not fetch from local API, using only external data");
       return {
         data: data.slice(0, 10),
         error: null,
       };
-    } else {
-      // In development or client-side, fetch from both sources
-      try {
-        const [response, responseLocal] = await Promise.all([
-          fetch(`${BASE_URL_POSTS}/posts`),
-          fetch(`${BASE_URL}/api/posts`),
-        ]);
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch posts from ${BASE_URL_POSTS}/posts`);
-        }
-
-        const data = await response.json();
-        const localData = await responseLocal.json();
-        console.log({ data, localData });
-
-        return {
-          data: [...data.slice(0, 10), ...localData],
-          localData,
-          error: null,
-        };
-      } catch {
-        // Fallback to just the external API if local API fails
-        const response = await fetch(`${BASE_URL_POSTS}/posts`);
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch posts from ${BASE_URL_POSTS}/posts`);
-        }
-
-        const data = await response.json();
-
-        console.warn(
-          "Could not fetch from local API, using only external data"
-        );
-        return {
-          data: data.slice(0, 10),
-          error: null,
-        };
-      }
     }
+    // }
   } catch (error) {
     console.error("Error fetching posts:", error);
     return {
@@ -199,7 +197,6 @@ export async function updatePost(
   }
 }
 
-// Get all posts with Zustand
 export function usePosts() {
   const { posts, isLoading, error, fetchPosts } = usePostStore();
 
@@ -212,7 +209,6 @@ export function usePosts() {
   return { posts, isLoading, error, refetch: fetchPosts };
 }
 
-// Get post by ID with Zustand
 export function usePost(id: number) {
   const { posts, getPostById, isLoading, error, fetchPosts } = usePostStore();
 
