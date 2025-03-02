@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   const cookieStore = await cookies();
 
   if (username === authData.username && password === authData.password) {
-    cookieStore.set({
+    await cookieStore.set({
       name: "user",
       value: JSON.stringify({ username }),
       httpOnly: true,
