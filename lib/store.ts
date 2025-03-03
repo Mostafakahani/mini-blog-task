@@ -1,12 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-export interface Post {
-  id: number;
-  title: string;
-  body: string;
-  userId: number;
-}
+import { Post } from "./types";
 
 interface PostState {
   posts: Post[];
@@ -86,7 +80,7 @@ export const usePostStore = create<PostState>()(
       },
     }),
     {
-      name: "posts-storage", // نام برای ذخیره در localStorage
+      name: "posts-storage",
     }
   )
 );
