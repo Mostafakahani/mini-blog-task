@@ -33,7 +33,7 @@ export default function AuthPage() {
         if (data.success) {
           setCookie("user", "mm");
 
-          router.push("/");
+          window.location.href = "/create";
         } else {
           setError(data.message || "نام کاربری یا رمز عبور اشتباه است");
         }
