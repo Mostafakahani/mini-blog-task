@@ -1,5 +1,5 @@
-import React from "react";
-import { usePostStore } from "./store";
+// import React from "react";
+// import { usePostStore } from "./store";
 import { Post } from "./types";
 
 const BASE_URL_POSTS = process.env.NEXT_PUBLIC_BASE_URL_POSTS || "";
@@ -7,63 +7,30 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 export async function getAllPosts() {
   try {
-    // During build time, we should only fetch from external API
-    // For server-side rendering that runs at request time, we can use both
-    // const isServerSideRendering =
-    //   typeof window === "undefined" && process.env.NODE_ENV !== "production";
+    let localData = [];
 
-    // if (isServerSideRendering) {
-    //   // When in production build process, only fetch from external API
-    //   const response = await fetch(`${BASE_URL_POSTS}/posts`);
-
-    //   if (!response.ok) {
-    //     throw new Error(`Failed to fetch posts from ${BASE_URL_POSTS}/posts`);
-    //   }
-
-    //   const data = await response.json();
-    //   console.log("server render");
-
-    //   return {
-    //     data: data.slice(0, 10),
-    //     error: null,
-    //   };
-    // } else {
-    // In development or client-side, fetch from both sources
-    try {
-      const [response, responseLocal] = await Promise.all([
-        fetch(`${BASE_URL_POSTS}/posts`),
-        fetch(`${BASE_URL}/api/posts`),
-      ]);
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch posts from ${BASE_URL_POSTS}/posts`);
-      }
-
-      const data = await response.json();
-      const localData = await responseLocal.json();
-
-      return {
-        data: [...data.slice(0, 10), ...localData],
-        localData,
-        error: null,
-      };
-    } catch {
-      // Fallback to just the external API if local API fails
-      const response = await fetch(`${BASE_URL_POSTS}/posts`);
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch posts from ${BASE_URL_POSTS}/posts`);
-      }
-
-      const data = await response.json();
-
-      console.warn("Could not fetch from local API, using only external data");
-      return {
-        data: data.slice(0, 10),
-        error: null,
-      };
+    // First, try to fetch from external API
+    const response = await fetch(`${BASE_URL_POSTS}/posts`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch posts from ${BASE_URL_POSTS}/posts`);
     }
-    // }
+    const externalData = await response.json();
+
+    // Try to fetch from local API
+    try {
+      const responseLocal = await fetch(`${BASE_URL}/api/posts`);
+      if (responseLocal.ok) {
+        localData = await responseLocal.json();
+      }
+    } catch {
+      console.warn("Could not fetch from local API, using only external data");
+    }
+
+    return {
+      data: [...externalData.slice(0, 10), ...localData],
+      localData,
+      error: null,
+    };
   } catch (error) {
     console.error("Error fetching posts:", error);
     return {
@@ -198,27 +165,27 @@ export async function updatePost(
   }
 }
 
-export function usePosts() {
-  const { posts, isLoading, error, fetchPosts } = usePostStore();
+// export function usePosts() {
+//   const { posts, isLoading, error, fetchPosts } = usePostStore();
 
-  React.useEffect(() => {
-    if (posts.length === 0 && !isLoading && !error) {
-      fetchPosts();
-    }
-  }, [posts.length, isLoading, error, fetchPosts]);
+//   React.useEffect(() => {
+//     if (posts.length === 0 && !isLoading && !error) {
+//       fetchPosts();
+//     }
+//   }, [posts.length, isLoading, error, fetchPosts]);
 
-  return { posts, isLoading, error, refetch: fetchPosts };
-}
+//   return { posts, isLoading, error, refetch: fetchPosts };
+// }
 
-export function usePost(id: number) {
-  const { posts, getPostById, isLoading, error, fetchPosts } = usePostStore();
+// export function usePost(id: number) {
+//   const { posts, getPostById, isLoading, error, fetchPosts } = usePostStore();
 
-  React.useEffect(() => {
-    if (posts.length === 0 && !isLoading && !error) {
-      fetchPosts();
-    }
-  }, [posts.length, isLoading, error, fetchPosts]);
+//   React.useEffect(() => {
+//     if (posts.length === 0 && !isLoading && !error) {
+//       fetchPosts();
+//     }
+//   }, [posts.length, isLoading, error, fetchPosts]);
 
-  const post = getPostById(id);
-  return { post, isLoading, error };
-}
+//   const post = getPostById(id);
+//   return { post, isLoading, error };
+// }
