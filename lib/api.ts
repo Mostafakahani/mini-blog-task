@@ -9,14 +9,12 @@ export async function getAllPosts() {
   try {
     let localData = [];
 
-    // First, try to fetch from external API
     const response = await fetch(`${BASE_URL_POSTS}/posts`);
     if (!response.ok) {
       throw new Error(`Failed to fetch posts from ${BASE_URL_POSTS}/posts`);
     }
     const externalData = await response.json();
 
-    // Try to fetch from local API
     try {
       const responseLocal = await fetch(`${BASE_URL}/api/posts`);
       if (responseLocal.ok) {
